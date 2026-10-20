@@ -1,0 +1,160 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "helllo there\nIam Zigato . How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bc081c90-25a2-4ecc-b4f6-82c401195bd6",
+      "name": "When chat message received",
+      "webhookId": "a271d8da-a8dd-4615-b288-6a3aace3e33d"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "\"You are a Zygato customer support agent. Greet the user.\nUse the Zygato Master Doc policy.pdf tool for policy questions. Never invent policy\ndetails. If the answer is not in the doc, offer human support.\" use the document for the answer"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "707729d2-4270-4941-98a1-169353c9a84c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        208
+      ],
+      "id": "c9f52527-b49e-4e6c-91f2-e94266f21e55",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        208
+      ],
+      "id": "bcd1b8ff-a61d-490f-83b3-6aafa996d331",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://prod-1-data.ke.pinecone.io/assistant/chat/zogato",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Api-Key",
+              "value": "pcsk_2NpcGN_97ws5284aQ53ZQLYFRYew7YXifZvT4siNUyMFPuJ91tVsKarLT6rVaJ78YpDjbb"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\":\"{{ $json.chatInput }}\"\n\n    }\n  ],\n  \"stream\": false,\n  \"model\": \"gpt-4o\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        384,
+        208
+      ],
+      "id": "9d80feb4-3a8b-4d7c-bc38-014edc072119",
+      "name": "zigato"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "zigato": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ac089ff4-da5c-4726-89d9-78a3a606460f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf7862e76e4c42e11a20e1b7206cb4acbcaf48e570a0ac8d0d3875c2b35bdfc4"
+  },
+  "nodeGroups": [],
+  "id": "6TKb63yvoMlE0YGe",
+  "tags": []
+}
