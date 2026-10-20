@@ -41,5 +41,7 @@ Workflow demonstration completed. Live execution requires a running n8n instance
 Arfat
 
 AI/ML Engineering | AI Automation | Python
+## Workflow Preview
 
-Workflow Preview
+![Customer Support Agent Workflow](customer-support-agent-workflow.png)
+
